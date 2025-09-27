@@ -1,4 +1,5 @@
 import java.io.*;
+import java.util.ArrayList;
 
 /**
  * This is the provided NumberTriangle class to be used in this coding task.
@@ -88,8 +89,26 @@ public class NumberTriangle {
      *
      */
     public int retrieve(String path) {
-        // TODO implement this method
-        return -1;
+        if (path.isEmpty()) {
+            return root;
+        }
+        int i = 0;
+        NumberTriangle temp = new NumberTriangle(root);
+        temp.setLeft(left);
+        temp.setRight(right);
+        while (i < path.length()) {
+            if (temp.isLeaf()) {
+                break;
+            }
+            if (path.charAt(i) == 'l') {
+                temp =  temp.left;
+            }
+            if (path.charAt(i) == 'r') {
+                temp =  temp.right;
+            }
+            i++;
+        }
+        return temp.root;
     }
 
     /** Read in the NumberTriangle structure from a file.
@@ -109,6 +128,11 @@ public class NumberTriangle {
         InputStream inputStream = NumberTriangle.class.getClassLoader().getResourceAsStream(fname);
         BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
 
+        // temporary NumberTriangle
+        NumberTriangle temp;
+
+        // an ArrayList of ArrayLists to track all NumberTriangles from the input
+        ArrayList<ArrayList<NumberTriangle>> triangles = new ArrayList<>();
 
         // TODO define any variables that you want to use to store things
 
@@ -116,12 +140,29 @@ public class NumberTriangle {
         // so might want a variable for that.
         NumberTriangle top = null;
 
+        // initialization + special processing for first line
         String line = br.readLine();
+        top = new NumberTriangle(Integer.parseInt(line));
+        triangles.add(new ArrayList<>());
+        triangles.get(0).add(top);
+        line = br.readLine();
         while (line != null) {
+            // goal: populate triangles with specified requirement
 
-            // remove when done; this line is included so running starter code prints the contents of the file
-            System.out.println(line);
-
+            // process input
+            String[] lines = line.split(" ");
+            triangles.add(new ArrayList<>());
+            // populate triangle + assign left and right child
+            for (int i = 0; i < lines.length; i++) {
+                temp = new NumberTriangle(Integer.parseInt(lines[i]));
+                triangles.get(triangles.size() - 1).add(temp);
+                if (i != lines.length - 1) {
+                    triangles.get(triangles.size() - 2).get(i).setLeft(temp);
+                }
+                if (i != 0) {
+                    triangles.get(triangles.size() - 2).get(i - 1).setRight(temp);
+                }
+            }
             // TODO process the line
 
             //read the next line
