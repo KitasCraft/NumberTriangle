@@ -74,7 +74,10 @@ public class NumberTriangle {
      * certain depth and order from the left. Note that depth and order are 0-indexed
      * @param depth how deep the topmost number is in the whole triangle
      * @param order the order of this number from the left
-     * @param value a 2D ArrayList to keep track of already considered subtriangle
+     * @param value a 2D ArrayList of integers to keep track of already considered subtriangle.
+     *              It is recommended to assign an empty ArrayList to this parameter
+     * @return the sum of the maximum sum path. Note that since the data type is Integer,
+     *         if you're dealing with huge numbers, change all Integer data type to Long
      */
     public int maxSumPath(int depth, int order, ArrayList<ArrayList<Integer>> value) {
         while (value.size() < depth + 1) value.add(new ArrayList<>());
