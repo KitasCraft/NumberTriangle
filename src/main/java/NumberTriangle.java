@@ -64,7 +64,34 @@ public class NumberTriangle {
      * Note: a NumberTriangle contains at least one value.
      */
     public void maxSumPath() {
-        // for fun [not for credit]:
+        root = maxSumPath(0, 0, new ArrayList<>());
+        left = null;
+        right = null;
+    }
+
+    /**
+     * Find the sum of the maximum sum path if we only consider subtriangle starting at
+     * certain depth and order from the left. Note that depth and order are 0-indexed
+     * @param depth how deep the topmost number is in the whole triangle
+     * @param order the order of this number from the left
+     * @param value a 2D ArrayList to keep track of already considered subtriangle
+     */
+    public int maxSumPath(int depth, int order, ArrayList<ArrayList<Integer>> value) {
+        while (value.size() < depth + 1) value.add(new ArrayList<>());
+        while (value.get(depth).size() < order + 1) value.get(depth).add(-1);
+        if (isLeaf()) {
+            value.get(depth).set(order, root);
+            return root;
+        }
+        else if (value.get(depth).get(order) != -1) {
+            return value.get(depth).get(order);
+        }
+        else {
+            int res = Math.max(left.maxSumPath(depth + 1, order, value),
+                    right.maxSumPath(depth + 1, order + 1, value)) + root;
+            value.get(depth).set(order, res);
+            return res;
+        }
     }
 
 
@@ -134,8 +161,6 @@ public class NumberTriangle {
         // an ArrayList of ArrayLists to track all NumberTriangles from the input
         ArrayList<ArrayList<NumberTriangle>> triangles = new ArrayList<>();
 
-        // TODO define any variables that you want to use to store things
-
         // will need to return the top of the NumberTriangle,
         // so might want a variable for that.
         NumberTriangle top = null;
@@ -163,7 +188,6 @@ public class NumberTriangle {
                     triangles.get(triangles.size() - 2).get(i - 1).setRight(temp);
                 }
             }
-            // TODO process the line
 
             //read the next line
             line = br.readLine();
@@ -175,6 +199,7 @@ public class NumberTriangle {
     public static void main(String[] args) throws IOException {
 
         NumberTriangle mt = NumberTriangle.loadTriangle("input_tree.txt");
+        // NumberTriangle mt = NumberTriangle.loadTriangle("0067_triangle.txt");
 
         // [not for credit]
         // you can implement NumberTriangle's maxPathSum method if you want to try to solve
